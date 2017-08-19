@@ -3,17 +3,22 @@
 # script. The application will work only if it binds to
 # $OPENSHIFT_DIY_IP:8080
 set -x
+
+WF_URL=http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip
+ZIP_FILE=wildfly-10.1.0.Final.zip
+JBOSS_HOME=$OPENSHIFT_DATA_DIR/wildfly-10.1.0.Final
+
 cd $OPENSHIFT_DATA_DIR 
-if [ -d $OPENSHIFT_DATA_DIR/wildfly-8.0.0.Beta1 ]
+if [ -d $JBOSS_HOME ]
 then
-	cp $OPENSHIFT_REPO_DIR/diy/*.war $OPENSHIFT_DATA_DIR/wildfly-8.0.0.Beta1/standalone/deployments
-	cd $OPENSHIFT_DATA_DIR/wildfly-8.0.0.Beta1
+	cp $OPENSHIFT_REPO_DIR/diy/*.war $JBOSS_HOME/standalone/deployments
+	cd $JBOSS_HOME
 	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_DIY_DIR/logs/server.log 2>&1 &
 else
-	wget http://download.jboss.org/wildfly/8.0.0.Beta1/wildfly-8.0.0.Beta1.zip
-	unzip wildfly-8.0.0.Beta1.zip 
-	rm wildfly-8.0.0.Beta1.zip	
-	cd wildfly-8.0.0.Beta1/standalone/configuration
+	wget $WF_URL
+	unzip $ZIP_FILE
+	rm $ZIP_FILE
+	cd $JBOSS_HOME/standalone/configuration
 	OLD_VALUE=jboss.bind.address.management:127.0.0.1
 	NEW_VALUE=env.OPENSHIFT_DIY_IP
 	sed -i "s|$OLD_VALUE|$NEW_VALUE|g" standalone.xml
@@ -24,7 +29,7 @@ else
 	NEW_VALUE=env.OPENSHIFT_DIY_IP
 	sed -i "s|$OLD_VALUE|$NEW_VALUE|g" standalone.xml
 	sed -i "s#scan-interval=\"5000\"#scan-interval=\"5000\" deployment-timeout=\"300\"#g" standalone.xml
-	cp $OPENSHIFT_REPO_DIR/diy/*.war $OPENSHIFT_DATA_DIR/wildfly-8.0.0.Beta1/standalone/deployments
-	cd $OPENSHIFT_DATA_DIR/wildfly-8.0.0.Beta1
+	cp $OPENSHIFT_REPO_DIR/diy/*.war $JBOSS_HOME/standalone/deployments
+	cd $JBOSS_HOME
 	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_DIY_DIR/logs/server.log 2>&1 &
 fi
