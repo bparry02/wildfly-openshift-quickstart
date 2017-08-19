@@ -13,7 +13,7 @@ if [ -d $JBOSS_HOME ]
 then
 	cp $OPENSHIFT_REPO_DIR/diy/*.war $JBOSS_HOME/standalone/deployments
 	cd $JBOSS_HOME
-	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_DIY_DIR/logs/server.log 2>&1 &
+	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_LOG_DIR/server.log 2>&1 &
 else
 	wget $WF_URL
 	unzip $ZIP_FILE
@@ -31,5 +31,5 @@ else
 	sed -i "s#scan-interval=\"5000\"#scan-interval=\"5000\" deployment-timeout=\"300\"#g" standalone.xml
 	cp $OPENSHIFT_REPO_DIR/diy/*.war $JBOSS_HOME/standalone/deployments
 	cd $JBOSS_HOME
-	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_DIY_DIR/logs/server.log 2>&1 &
+	nohup bin/standalone.sh -b $OPENSHIFT_DIY_IP -bmanagement=$OPENSHIFT_DIY_IP > $OPENSHIFT_LOG_DIR/server.log 2>&1 &
 fi
